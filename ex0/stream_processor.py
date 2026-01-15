@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, List
 
+
 class DataProcessor(ABC):
     @abstractmethod
     def process(self, data: Any) -> str:
@@ -13,32 +14,38 @@ class DataProcessor(ABC):
     def format_output(self, result: str) -> str:
         return f"{result}"
 
+
 class NumericProcessor(DataProcessor):
     def validate(self, data: Any) -> bool:
-        if not isinstance(data , list):
+        if not isinstance(data, list):
             raise TypeError("NumericProcessor expects a list")
+        if len(data) == 0:
+            raise ValueError("NumericProcessor expects a none_empty list")
         for x in data:
             if not isinstance(x, (int, float)):
                 raise TypeError("NumericProcessor expects numeric values only")
         return True
-    
+
     def process(self, data: Any) -> str:
         self.validate(data)
         count = len(data)
         total = 0
         for x in data:
             total += x
-        avg = total / count if count > 0 else 0
+        avg = total / count
         return self.format_output(
             f"Processed {count} numeric values, sum={total}, avg={avg}"
         )
+
 
 class TextProcessor(DataProcessor):
     def validate(self, data: Any) -> bool:
         if not isinstance(data, str):
             raise TypeError("TextProcessor expects a string")
+        if data == "":
+            raise ValueError("TextProcessor expects a none_empty string")
         return True
-    
+
     def process(self, data: Any) -> str:
         self.validate(data)
         char_count = len(data)
@@ -46,6 +53,7 @@ class TextProcessor(DataProcessor):
         return self.format_output(
             f"Processed text: {char_count} characters, {word_count} words"
         )
+
 
 class LogProcessor(DataProcessor):
     def validate(self, data: Any) -> bool:
@@ -59,15 +67,14 @@ class LogProcessor(DataProcessor):
         self.validate(data)
         parts = data.split(":", 1)
         level = parts[0].upper()
-        message= parts[1]
+        message = parts[1]
 
         tag = level
         if level == "ERROR":
             tag = "ALERT"
 
-        return self.format_output(
-            f"[{tag}] {level} level detected:{message}"
-        )
+        return self.format_output(f"[{tag}] {level} level detected:{message}")
+
 
 def main() -> None:
     print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
@@ -86,7 +93,6 @@ def main() -> None:
         if text.validate("Hello Nexus World"):
             print("Validation: Text data verified")
         print(f"{text.process('Hello Nexus World')}\n")
-        
 
         log = LogProcessor()
         print("Initializing Log Processor...")
@@ -110,7 +116,7 @@ def main() -> None:
             "INFO: System ready",
         ]
 
-        i=1
+        i = 1
         for processor, data in zip(processors, data_list):
             try:
                 result = processor.process(data)
@@ -121,12 +127,9 @@ def main() -> None:
 
         print("\nFoundation systems online. Nexus ready for advanced streams.")
 
-
     except Exception as exc:
         print(f"Fatal error: {exc}")
 
 
 if __name__ == "__main__":
     main()
-   
-        
