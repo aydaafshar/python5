@@ -155,7 +155,6 @@ class JSONAdapter(ProcessingPipeline):
         try:
             if isinstance(data, dict) and "records" in data:
                 return self._run_stages(data)
-        
             if isinstance(data, str) and data.startswith("{"):
                 data = {"sensor": "temp", "value": 23.5, "unit": "C"}
 
@@ -233,7 +232,6 @@ class StreamAdapter(ProcessingPipeline):
                     f"{stage_result['records']} records"
                     "processed through 3-stage pipeline"
                 )
-        
             if "error" in stage_result:
                 self.error_count += 1
                 return (
