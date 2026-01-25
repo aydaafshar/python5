@@ -282,12 +282,19 @@ def demo_streams() -> None:
          f"- Transaction data:{results[1].split(':')[1].split(',')[0]}"
          f"processed"
          )
-    print(f"- Event data:{results[2].split(':')[1].split(',')[0]} processed")
+    print(
+        f"- Event data:{results[2].split(':')[1].split(',')[0]} processed"
+        )
     print()
 
-    sensor_filtered = sensor.filter_data(test_batches[0], "critical")
-    transaction_filtered = transaction.filter_data(test_batches[1], "large")
-    event_filtered = event.filter_data(test_batches[2], "error")
+    sensor_stream = processor.streams[0]
+    transaction_stream = processor.streams[1]
+    event_stream = processor.streams[2]
+
+    sensor_filtered = sensor_stream.filter_data(test_batches[0], "critical")
+    transaction_filtered = transaction_stream.filter_data(test_batches[1],
+                                                          "large")
+    event_filtered = event_stream.filter_data(test_batches[2], "error")
     print("Stream filtering active: High-priority data only")
     print(
         f"Filtered results: "
